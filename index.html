@@ -1264,9 +1264,9 @@ function renderBoardJump(){
 //  가입하면 모든 방문자/관리자와 공유됩니다.
 // ══════════════════════════════════════════════════════════
 const SK="wd_session";
-const MEMBER_URL = (window.SUPABASE_URL||"")+"/rest/v1/jh_members";
-const MHEAD = ()=>({ "apikey":(window.SUPABASE_ANON_KEY||""), "Authorization":"Bearer "+(window.SUPABASE_ANON_KEY||""), "Content-Type":"application/json" });
-const membersOn = ()=>!!((window.SUPABASE_URL||"").trim() && (window.SUPABASE_ANON_KEY||"").trim());
+const MEMBER_URL = SUPABASE_URL+"/rest/v1/jh_members";
+const MHEAD = ()=>({ "apikey":SUPABASE_ANON_KEY, "Authorization":"Bearer "+SUPABASE_ANON_KEY, "Content-Type":"application/json" });
+const membersOn = ()=>!!(SUPABASE_URL && SUPABASE_ANON_KEY);
 
 // 서버에 아이디 등록. 성공 true / 이미 있으면 'dup' / 실패 false
 async function memberSignup(username){
@@ -1294,7 +1294,7 @@ const session={
 };
 
 // ── 동시접속(하트비트): 접속 중이면 3분마다 신호 전송 ──
-const PRESENCE_URL=(window.SUPABASE_URL||"")+"/rest/v1/jh_presence";
+const PRESENCE_URL=SUPABASE_URL+"/rest/v1/jh_presence";
 let presenceToken=(function(){ try{ let t=localStorage.getItem("wd_ptoken"); if(!t){ t=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem("wd_ptoken",t);} return t; }catch(e){ return Math.random().toString(36).slice(2);} })();
 async function pingPresence(){
   if(!membersOn()) return;
@@ -1303,7 +1303,7 @@ async function pingPresence(){
 pingPresence(); setInterval(pingPresence, 60000);  // 1분마다 갱신
 
 // ── 회원별 찜: 로그인한 사람만, 서버에 저장 ──
-const FAV_URL=(window.SUPABASE_URL||"")+"/rest/v1/jh_favorites";
+const FAV_URL=SUPABASE_URL+"/rest/v1/jh_favorites";
 let FAV_SET=new Set();          // 현재 로그인 회원이 찜한 link_key 모음(메모리 캐시)
 function favKeyOf(l,i){ return (l.url||l.name||String(i||"")); }
 async function loadFavorites(){
